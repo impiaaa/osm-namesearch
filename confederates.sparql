@@ -1,0 +1,22 @@
+# Query Wikidata for people who
+SELECT DISTINCT ?givenNameLabel ?familyNameLabel ?wdLabel ?wd ?article WHERE {
+  VALUES ?confederateArmedForces { wd:Q1125021 wd:Q1124986 }
+  {
+    # Served in the Confederate States Army or Navy
+    ?wd wdt:P138*/wdt:P241/wdt:P361* ?confederateArmedForces;
+        wdt:P31 wd:Q5.
+  } UNION {
+    # Swore allegiance to the Confederacy
+    ?wd wdt:P138*/wdt:P945 wd:Q81931;
+        wdt:P31 wd:Q5.
+  }
+  ?wd wdt:P734 ?familyName;
+      wdt:P735 ?givenName.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  OPTIONAL {
+    ?article schema:about ?wd;
+      schema:inLanguage "en";
+      schema:isPartOf <https://en.wikipedia.org/>.
+  }
+}
+
