@@ -1,22 +1,34 @@
 SELECT DISTINCT ?givenNameLabel ?familyNameLabel ?wdLabel ?wd ?article WHERE {
+  # Query Wikidata for people who
   {
+    # Worked as any kind of human rights activist
     ?wd (wdt:P106/(wdt:P279*)) wd:Q1476215;
+      # are or were real people
       wdt:P31 wd:Q5;
+      # and are African-American
       wdt:P172 wd:Q49085.
   }
   UNION
   {
+    # Worked as abolitionists
     ?wd wdt:P106 wd:Q18510179;
         wdt:P31 wd:Q5.
   }
   UNION
   {
+    # Espoused or specialized in abolitionism
     ?wd (wdt:P1142|wdt:P101) wd:Q169390;
         wdt:P31 wd:Q5.
   }
+  
+  # Get their first and last names
   ?wd wdt:P734 ?familyName;
       wdt:P735 ?givenName.
+  
+  # and a nicely-formatted full name ("label")
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  
+  # as well as the Wikipedia article about them, if there is one.
   OPTIONAL {
     ?article schema:about ?wd;
       schema:inLanguage "en";

@@ -1,9 +1,16 @@
 SELECT DISTINCT ?givenNameLabel ?familyNameLabel ?wdLabel ?wd ?article WHERE {
+  # Query Wikidata for people or their namesakes who espoused segregationism
   ?wd wdt:P138*/wdt:P1142 wd:Q96279350;
+  # and were real people
       wdt:P31 wd:Q5;
+  # then get their first and last names
       wdt:P734 ?familyName;
       wdt:P735 ?givenName.
+  
+  # Get a nicely-formatted full name ("label")
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  
+  # as well as the Wikipedia article about them, if there is one.
   OPTIONAL {
     ?article schema:about ?wd;
       schema:inLanguage "en";

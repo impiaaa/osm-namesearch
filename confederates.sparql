@@ -1,18 +1,27 @@
-# Query Wikidata for people who
 SELECT DISTINCT ?givenNameLabel ?familyNameLabel ?wdLabel ?wd ?article WHERE {
   VALUES ?confederateArmedForces { wd:Q1125021 wd:Q1124986 }
+
+  # Query Wikidata for people who
   {
     # Served in the Confederate States Army or Navy
     ?wd wdt:P138*/wdt:P241/wdt:P361* ?confederateArmedForces;
+    # and are real people
         wdt:P31 wd:Q5.
   } UNION {
     # Swore allegiance to the Confederacy
     ?wd wdt:P138*/wdt:P945 wd:Q81931;
+    # and are real people
         wdt:P31 wd:Q5.
   }
+  
+  # Get their first and last names
   ?wd wdt:P734 ?familyName;
       wdt:P735 ?givenName.
+  
+  # and a nicely-formatted full name ("label")
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  
+  # as well as the Wikipedia article about them, if there is one.
   OPTIONAL {
     ?article schema:about ?wd;
       schema:inLanguage "en";
